@@ -1,10 +1,12 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-mytag     = 'test1'
-debugmode = 1
-database  = ''
+mytag     = 'test5'
+debugmode = 2
+database  = 'sqlite'
 site      = os.environ.get("SITE")
+validmode = 1
+maxevts   = 1000
 
 #........................................................................................
 if site == 'Local':
@@ -22,6 +24,12 @@ else:
 process   = cms.Process("TestFlow")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.categories = ['*']
+process.MessageLogger.destinations = ['cout']
+process.MessageLogger.cout = cms.untracked.PSet(
+    	threshold = cms.untracked.string('DEBUG'),
+	INFO = cms.untracked.PSet(
+        limit = cms.untracked.int32(-1) ) )
 
 #.. Geometry
 process.load("Configuration.StandardSequences.Geometry_cff")
@@ -50,16 +58,20 @@ process.PoolDBESSource = cms.ESSource("PoolDBESSource",
 
 process.CondDBCommon.connect = cms.string( dbconnection )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(maxevts) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring( inputfile ) )
 
 process.testflow = cms.EDAnalyzer('RPCTechnicalTrigger',
+				  GMTInputTag = cms.untracked.InputTag("gtDigis"),
                                   RPCTTDebugMode = cms.untracked.int32(debugmode),
                                   RBCLogicType = cms.untracked.string("ChamberORLogic"),
                                   TTULogicType = cms.untracked.string("TrackingAlg"),
-                                  TmpDataFile = cms.untracked.string("testdata.txt") )
+                                  TmpDataFile = cms.untracked.string("testdata.txt"),
+                                  RPCTTValidationMode = cms.untracked.int32(validmode))
+
+process.TFileService = cms.Service("TFileService", fileName = cms.string('histo.root') )
 
 process.p = cms.Path(process.testflow)
 
