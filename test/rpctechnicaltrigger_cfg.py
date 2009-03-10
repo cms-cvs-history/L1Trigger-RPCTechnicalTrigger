@@ -11,6 +11,7 @@ maxevts   = 1000
 #........................................................................................
 if site == 'Local':
     inputfile = 'file:/opt/CMS/data/PrivateMC/Cosmic08/reco_CosmicMC_BOFF_2110.root'
+    ###inputfile = 'file:/opt/CMS/data/TTUdata/76401/digis2.root'
 else:
     inputfile = 'file:/afs/cern.ch/user/a/aosorio/scratch0/data/reco_CosmicMC_BOFF_2110.root'
 
@@ -63,7 +64,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(maxevts) )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring( inputfile ) )
 
-process.testflow = cms.EDAnalyzer('RPCTechnicalTrigger',
+process.testflow = cms.EDProducer('RPCTechnicalTrigger',
 				  GMTInputTag = cms.untracked.InputTag("gtDigis"),
                                   RPCTTDebugMode = cms.untracked.int32(debugmode),
                                   RBCLogicType = cms.untracked.string("ChamberORLogic"),
