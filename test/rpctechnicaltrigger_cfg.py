@@ -1,17 +1,19 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
+process   = cms.Process("RPCTT")
+
 mytag     = 'test5'
 debugmode = 2
+validmode = 1
+
 database  = 'sqlite'
 site      = os.environ.get("SITE")
-validmode = 1
 maxevts   = 1000
 
 #........................................................................................
 if site == 'Local':
     inputfile = 'file:/opt/CMS/data/PrivateMC/Cosmic08/reco_CosmicMC_BOFF_2110.root'
-    ###inputfile = 'file:/opt/CMS/data/TTUdata/76401/digis2.root'
 else:
     inputfile = 'file:/afs/cern.ch/user/a/aosorio/scratch0/data/reco_CosmicMC_BOFF_2110.root'
 
@@ -21,8 +23,6 @@ else:
     dbconnection = 'oracle://devdb10/CMS_RPC_COMMISSIONING'
 #........................................................................................
 
-
-process   = cms.Process("TestFlow")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories = ['*']
@@ -64,15 +64,31 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(maxevts) )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring( inputfile ) )
 
-process.testflow = cms.EDProducer('RPCTechnicalTrigger',
-				  GMTInputTag = cms.untracked.InputTag("gtDigis"),
-                                  RPCTTDebugMode = cms.untracked.int32(debugmode),
-                                  RBCLogicType = cms.untracked.string("ChamberORLogic"),
-                                  TTULogicType = cms.untracked.string("TrackingAlg"),
-                                  TmpDataFile = cms.untracked.string("testdata.txt"),
-                                  RPCTTValidationMode = cms.untracked.int32(validmode))
+
+process.load("L1Trigger.RPCTechnicalTrigger.rpctechnicaltrigger_cfi")
+
+process.rpctt = cms.EDProducer('RPCTechnicalTrigger',
+                               GMTInputTag = cms.untracked.InputTag("gtDigis"),
+                               RPCTTDebugMode = cms.untracked.int32(debugmode),
+                               RBCLogicType = cms.untracked.string("ChamberORLogic"),
+                               TTULogicType = cms.untracked.string("TrackingAlg"),
+                               TestDatafile = cms.untracked.string("testdata.txt"),
+                               RPCTTValidationMode = cms.untracked.int32(validmode),
+                               BitNumbers=cms.vuint32(24,25,26,27,28),
+                               BitNames=cms.vstring('RPCTT_Wheelm2',
+                                                    'RPCTT_Wheelm1',
+                                                    'RPCTT_Wheel0',
+                                                    'RPCTT_Wheelp1',
+                                                    'RPCTT_Wheelp2')
+                               )
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('histo.root') )
 
-process.p = cms.Path(process.testflow)
+process.out = cms.OutputModule("PoolOutputModule",
+                               fileName = cms.untracked.string('rpcttbits.root'),
+                               outputCommands = cms.untracked.vstring('drop *','keep L1GtTechnicalTriggerRecord_*_*_*')
+                               )
 
+process.p = cms.Path(process.rpctt)
+
+process.e = cms.EndPath(process.out)
