@@ -4,12 +4,12 @@ import os
 process   = cms.Process("RPCTT")
 
 mytag     = 'test5'
-debugmode = 2
-validmode = 1
+trigmode  = 1
+debugmode = 0
 
 database  = 'sqlite'
 site      = os.environ.get("SITE")
-maxevts   = 1000
+maxevts   = 100
 
 #........................................................................................
 if site == 'Local':
@@ -64,30 +64,23 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(maxevts) )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring( inputfile ) )
 
-
 process.load("L1Trigger.RPCTechnicalTrigger.rpctechnicaltrigger_cfi")
 
 process.rpctt = cms.EDProducer('RPCTechnicalTrigger',
                                GMTInputTag = cms.untracked.InputTag("gtDigis"),
-                               RPCTTDebugMode = cms.untracked.int32(debugmode),
-                               RBCLogicType = cms.untracked.string("ChamberORLogic"),
-                               TTULogicType = cms.untracked.string("TrackingAlg"),
+                               DebugMode = cms.untracked.int32(debugmode),
+                               TriggerMode = cms.untracked.int32(trigmode),
                                TestDatafile = cms.untracked.string("testdata.txt"),
-                               RPCTTValidationMode = cms.untracked.int32(validmode),
                                BitNumbers=cms.vuint32(24,25,26,27,28),
                                BitNames=cms.vstring('RPCTT_Wheelm2',
                                                     'RPCTT_Wheelm1',
                                                     'RPCTT_Wheel0',
                                                     'RPCTT_Wheelp1',
-                                                    'RPCTT_Wheelp2')
-                               )
-
-process.TFileService = cms.Service("TFileService", fileName = cms.string('histo.root') )
+                                                    'RPCTT_Wheelp2') )
 
 process.out = cms.OutputModule("PoolOutputModule",
                                fileName = cms.untracked.string('rpcttbits.root'),
-                               outputCommands = cms.untracked.vstring('drop *','keep L1GtTechnicalTriggerRecord_*_*_*')
-                               )
+                               outputCommands = cms.untracked.vstring('drop *','keep L1GtTechnicalTriggerRecord_*_*_*') )
 
 process.p = cms.Path(process.rpctt)
 
