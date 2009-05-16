@@ -1,11 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 import os
 
-process   = cms.Process("RPCTT")
+process   = cms.Process("RPCTechnicalTrigger")
 
 mytag     = 'test5'
-trigmode  = 1
-debugmode = 0
 
 database  = 'sqlite'
 site      = os.environ.get("SITE")
@@ -64,24 +62,14 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(maxevts) )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring( inputfile ) )
 
-process.load("L1Trigger.RPCTechnicalTrigger.rpctechnicaltrigger_cfi")
+process.load("L1Trigger.RPCTechnicalTrigger.rpcTechnicalTrigger_cfi")
 
-process.rpctt = cms.EDProducer('RPCTechnicalTrigger',
-                               GMTInputTag = cms.untracked.InputTag("gtDigis"),
-                               DebugMode = cms.untracked.int32(debugmode),
-                               TriggerMode = cms.untracked.int32(trigmode),
-                               TestDatafile = cms.untracked.string("testdata.txt"),
-                               BitNumbers=cms.vuint32(24,25,26,27,28),
-                               BitNames=cms.vstring('RPCTT_Wheelm2',
-                                                    'RPCTT_Wheelm1',
-                                                    'RPCTT_Wheel0',
-                                                    'RPCTT_Wheelp1',
-                                                    'RPCTT_Wheelp2') )
 
 process.out = cms.OutputModule("PoolOutputModule",
                                fileName = cms.untracked.string('rpcttbits.root'),
                                outputCommands = cms.untracked.vstring('drop *','keep L1GtTechnicalTriggerRecord_*_*_*') )
 
-process.p = cms.Path(process.rpctt)
+process.p = cms.Path(process.rpcTechnicalTrigger)
 
 process.e = cms.EndPath(process.out)
+
