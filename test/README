@@ -1,0 +1,21 @@
+* Sep 14 2009: Andres Osorio
+
+Notes on the hardware-pseudoconfig.txt and hardware-pseudoconfig-TTU-X.txt files:
+
+The "hardware-pseudoconfig.txt" describe some of the RPC-TT hardware configuration needed to run the emulator. It is equivalent in content to the 
+sqlite file also included in this /test area.
+
+Contents:
+
+Default:
+
+How to use it:
+
+
+----------------------------
+
+The test area also include two other configurations: hardware-pseudoconfig-TTU-3.txt and hardware-pseudoconfig-TTU-5.txt where the -X value says the 
+majority level used for all the Logics.
+
+----------------------------
+
