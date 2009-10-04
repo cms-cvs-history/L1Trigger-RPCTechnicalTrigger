@@ -7,6 +7,19 @@ sqlite file also included in this /test area.
 
 Contents:
 
+First part: RBC configuration x 30
+
+line1: rbc_id wheel_id BCN0_delay Majority LogicName
+line2: masked OR inputs
+line3: forced OR inputs
+
+
+Second block: TTU configuration x 3
+
+line1: ttu_id run_type trigger_mode firmware_ver length_fiber delay max_wheels wheel_id1 wheel_id2 logic_name track_length
+line2: masked sectors
+line3: forced sectors
+
 Default:
 
 How to use it:
