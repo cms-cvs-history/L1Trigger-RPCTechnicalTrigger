@@ -32,3 +32,13 @@ majority level used for all the Logics.
 
 ----------------------------
 
+* October 24 2009
+
+Description of provided test cfg files:
+
+rpcTechnicalTrigger_cfg.py: basic cfg file: can run on RelVal physics samples
+rpcTechnicalTriggerData_cfg.py: example of running on data (CRAFT2)
+rpcTechnicalTriggerCosmics_cfg.py: example of running on Cosmic MC samples: the base digi collection changes in this case to RPCSimLinks as instructed in this line:
+"process.rpcTechnicalTrigger.UseRPCSimLink = cms.untracked.int32(1) "
+
+----------------------------
